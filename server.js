@@ -21,7 +21,8 @@ function setCORS(res) {
   res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'GET,POST,OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-}
+// To this (providing a dummy base URL since req.url only contains the pathname/search):
+const parsed = new URL(req.url, `http://${req.headers.host}`);}
 
 const server = http.createServer((req, res) => {
   const parsed = url.parse(req.url);
