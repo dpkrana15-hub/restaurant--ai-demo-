@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Restaurant AI Demo — See AI Work for Your Business</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0C0F0A;--surface:#13160F;--card:#1A1E15;--border:#2A2F22;
+  --accent:#B8F55A;--accent-dim:#7EAA35;--text:#F0F2EC;--muted:#7A8070;
+  --muted2:#4A5040;--red:#FF6B6B;--amber:#FFB347;--blue:#64B5F6;--purple:#CE93D8;
+}
+body{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;font-size:15px;line-height:1.6;min-height:100vh}
+nav{position:sticky;top:0;z-index:100;background:rgba(12,15,10,0.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 2rem}
+.nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:56px}
+.logo{font-family:'Instrument Serif',serif;font-size:20px;color:var(--text)}
+.logo span{color:var(--accent)}
+.nav-cta{background:var(--accent);color:#0C0F0A;font-size:13px;font-weight:600;padding:7px 16px;border-radius:6px;border:none;cursor:pointer;text-decoration:none;display:inline-block}
+.hero{max-width:1100px;margin:0 auto;padding:5rem 2rem 4rem;text-align:center}
+.hero-eyebrow{display:inline-block;font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);border:1px solid var(--accent-dim);border-radius:20px;padding:4px 14px;margin-bottom:1.5rem}
+.hero h1{font-family:'Instrument Serif',serif;font-size:clamp(2.4rem,5vw,3.8rem);line-height:1.15;letter-spacing:-0.02em;margin-bottom:1.25rem}
+.hero h1 em{font-style:italic;color:var(--accent)}
+.hero p{font-size:17px;color:var(--muted);max-width:520px;margin:0 auto 2rem;line-height:1.7}
+.hero-stats{display:flex;gap:2rem;justify-content:center;flex-wrap:wrap;margin-top:3rem;padding-top:3rem;border-top:1px solid var(--border)}
+.stat-num{font-family:'Instrument Serif',serif;font-size:2rem;color:var(--accent);display:block}
+.stat-label{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em}
+.demo-section{max-width:1100px;margin:0 auto;padding:2rem 2rem 5rem}
+.section-label{font-size:11px;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--accent);margin-bottom:0.5rem}
+.section-title{font-family:'Instrument Serif',serif;font-size:2rem;letter-spacing:-0.02em;margin-bottom:0.75rem}
+.section-sub{color:var(--muted);font-size:15px;margin-bottom:2.5rem}
+.tabs{display:flex;gap:0;flex-wrap:wrap;margin-bottom:2rem;border-bottom:1px solid var(--border)}
+.tab-btn{padding:10px 18px;background:transparent;border:none;border-bottom:2px solid transparent;color:var(--muted);cursor:pointer;font-size:14px;font-weight:500;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:7px;transition:all 0.15s;margin-bottom:-1px}
+.tab-btn:hover{color:var(--text)}
+.tab-btn.active{color:var(--accent);border-bottom-color:var(--accent)}
+.panel{display:none}
+.panel.active{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem;align-items:start}
+@media(max-width:700px){.panel.active{grid-template-columns:1fr}}
+.form-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+.form-card h3{font-size:15px;font-weight:600;margin-bottom:1.25rem}
+.field{margin-bottom:1rem}
+.field label{display:block;font-size:12px;font-weight:500;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:0.05em}
+.field input,.field select,.field textarea{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:14px;font-family:'Inter',sans-serif;padding:10px 12px;outline:none;transition:border-color 0.15s}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--accent-dim)}
+.field textarea{resize:vertical;min-height:100px;line-height:1.6}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%237A8070' stroke-width='2'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:32px}
+.field select option{background:#1A1E15}
+.gen-btn{width:100%;padding:12px;background:var(--accent);color:#0C0F0A;font-size:14px;font-weight:600;font-family:'Inter',sans-serif;border:none;border-radius:8px;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:opacity 0.15s;margin-top:0.5rem}
+.gen-btn:hover{opacity:0.88}
+.gen-btn:disabled{opacity:0.4;cursor:not-allowed}
+.output-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem;min-height:320px;display:flex;flex-direction:column}
+.output-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem}
+.output-header h3{font-size:15px;font-weight:600}
+.copy-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-size:12px;font-family:'Inter',sans-serif;padding:5px 12px;border-radius:6px;cursor:pointer;display:none;align-items:center;gap:5px}
+.copy-btn:hover{border-color:var(--accent-dim);color:var(--accent)}
+.copy-btn.show{display:flex}
+.output-body{flex:1;font-size:14px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-break:break-word}
+.output-empty{color:var(--muted2);font-size:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:0.75rem;text-align:center;padding:2rem}
+.output-empty-icon{font-size:2rem}
+.spinner{width:16px;height:16px;border:2px solid var(--accent);border-top-color:transparent;border-radius:50%;animation:spin 0.6s linear infinite;flex-shrink:0}
+@keyframes spin{to{transform:rotate(360deg)}}
+.use-cases{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1rem;margin-top:4rem}
+.uc-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:1.5rem}
+.uc-icon{width:40px;height:40px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;margin-bottom:1rem}
+.uc-icon.green{background:rgba(184,245,90,0.12)}
+.uc-icon.blue{background:rgba(100,181,246,0.12)}
+.uc-icon.amber{background:rgba(255,179,71,0.12)}
+.uc-icon.purple{background:rgba(206,147,216,0.12)}
+.uc-card h4{font-size:14px;font-weight:600;margin-bottom:0.4rem}
+.uc-card p{font-size:13px;color:var(--muted);line-height:1.6}
+.uc-saving{font-size:12px;font-weight:600;color:var(--accent);margin-top:0.75rem}
+.how{max-width:1100px;margin:0 auto;padding:4rem 2rem}
+.steps-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:1px;background:var(--border);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-top:2rem}
+.step{background:var(--card);padding:1.5rem}
+.step-num{font-family:'Instrument Serif',serif;font-size:2.5rem;color:var(--accent);opacity:0.4;line-height:1;margin-bottom:0.75rem}
+.step h4{font-size:14px;font-weight:600;margin-bottom:0.4rem}
+.step p{font-size:13px;color:var(--muted);line-height:1.6}
+.cta-section{max-width:1100px;margin:2rem auto 4rem;padding:0 2rem}
+.cta-box{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:3rem;text-align:center;position:relative;overflow:hidden}
+.cta-box::before{content:'';position:absolute;top:-60px;left:50%;transform:translateX(-50%);width:300px;height:200px;background:radial-gradient(ellipse,rgba(184,245,90,0.08) 0%,transparent 70%);pointer-events:none}
+.cta-box h2{font-family:'Instrument Serif',serif;font-size:2rem;letter-spacing:-0.02em;margin-bottom:0.75rem}
+.cta-box p{color:var(--muted);margin-bottom:1.75rem;max-width:420px;margin-left:auto;margin-right:auto}
+.cta-actions{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn-primary{background:var(--accent);color:#0C0F0A;font-size:14px;font-weight:600;padding:12px 24px;border-radius:8px;border:none;cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;display:inline-block}
+.btn-secondary{background:transparent;color:var(--text);font-size:14px;font-weight:500;padding:12px 24px;border-radius:8px;border:1px solid var(--border);cursor:pointer;font-family:'Inter',sans-serif;text-decoration:none;display:inline-block}
+.btn-secondary:hover{border-color:var(--accent-dim);color:var(--accent)}
+footer{border-top:1px solid var(--border);padding:1.5rem 2rem;text-align:center;font-size:13px;color:var(--muted)}
+footer span{color:var(--accent)}
+.toast{position:fixed;bottom:2rem;right:2rem;background:var(--accent);color:#0C0F0A;font-size:13px;font-weight:600;padding:10px 18px;border-radius:8px;transform:translateY(80px);opacity:0;transition:all 0.25s;z-index:999}
+.toast.show{transform:translateY(0);opacity:1}
+.error-msg{color:var(--red);font-size:13px;margin-top:8px;display:none}
+.error-msg.show{display:block}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <div class="logo">Restaurant<span>AI</span></div>
+    <a class="nav-cta" href="#demo">Try it free →</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-eyebrow">Live AI Demo</div>
+  <h1>Your restaurant,<br/>running on <em>AI</em></h1>
+  <p>Watch AI reply to Google reviews, write social posts, send WhatsApp messages, and describe your menu — in seconds, not hours.</p>
+  <a class="nav-cta" href="#demo" style="font-size:15px;padding:12px 28px;border-radius:8px">Try it now — free</a>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-num">5–10 hrs</span><span class="stat-label">Saved per week</span></div>
+    <div class="stat"><span class="stat-num">3×</span><span class="stat-label">More Google reviews</span></div>
+    <div class="stat"><span class="stat-num">30 days</span><span class="stat-label">Content in minutes</span></div>
+    <div class="stat"><span class="stat-num">₹0</span><span class="stat-label">To try right now</span></div>
+  </div>
+</section>
+
+<section class="demo-section" id="demo">
+  <div class="section-label">Live demo</div>
+  <div class="section-title">See AI work for your restaurant</div>
+  <div class="section-sub">Type in your real restaurant details and watch AI generate content instantly.</div>
+
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('reviews',this)">⭐ Google Reviews</button>
+    <button class="tab-btn" onclick="switchTab('social',this)">📸 Social Media</button>
+    <button class="tab-btn" onclick="switchTab('whatsapp',this)">💬 WhatsApp</button>
+    <button class="tab-btn" onclick="switchTab('menu',this)">🍽️ Menu Copy</button>
+  </div>
+
+  <!-- REVIEWS -->
+  <div class="panel active" id="panel-reviews">
+    <div class="form-card">
+      <h3>Your details</h3>
+      <div class="field"><label>Restaurant name</label><input id="r-name" value="Spice Garden" /></div>
+      <div class="field"><label>Review type</label>
+        <select id="r-type">
+          <option value="5star">5-star — positive review</option>
+          <option value="1star">1-star — complaint</option>
+          <option value="4star">4-star — mixed feedback</option>
+          <option value="notext">No comment, just a rating</option>
+        </select>
+      </div>
+      <div class="field"><label>Paste the review</label>
+        <textarea id="r-review">The butter chicken here is absolutely divine! Creamy, perfectly spiced, and the naan was fresh out of the tandoor. Service was a bit slow but the food more than made up for it. Will definitely be back!</textarea>
+      </div>
+      <button class="gen-btn" id="btn-reviews" onclick="generate('reviews')">✦ Generate AI reply</button>
+      <div class="error-msg" id="err-reviews"></div>
+    </div>
+    <div class="output-card">
+      <div class="output-header"><h3>AI-generated reply</h3><button class="copy-btn" id="copy-reviews" onclick="copyOut('reviews')">⎘ Copy</button></div>
+      <div class="output-body" id="out-reviews"><div class="output-empty"><div class="output-empty-icon">⭐</div><div>Your AI reply will appear here.</div></div></div>
+    </div>
+  </div>
+
+  <!-- SOCIAL -->
+  <div class="panel" id="panel-social">
+    <div class="form-card">
+      <h3>Your details</h3>
+      <div class="field"><label>Restaurant name</label><input id="s-name" value="Spice Garden" /></div>
+      <div class="field"><label>Post type</label>
+        <select id="s-type">
+          <option value="dish">Dish spotlight post</option>
+          <option value="calendar">7-day content ideas</option>
+          <option value="festival">Festival / occasion post</option>
+          <option value="reel">30-second Reel script</option>
+        </select>
+      </div>
+      <div class="field"><label>Dish / topic / occasion</label>
+        <textarea id="s-detail">Dal Makhani — slow-cooked overnight, finished with cream and smoked butter</textarea>
+      </div>
+      <button class="gen-btn" id="btn-social" onclick="generate('social')">✦ Generate post</button>
+      <div class="error-msg" id="err-social"></div>
+    </div>
+    <div class="output-card">
+      <div class="output-header"><h3>AI-generated content</h3><button class="copy-btn" id="copy-social" onclick="copyOut('social')">⎘ Copy</button></div>
+      <div class="output-body" id="out-social"><div class="output-empty"><div class="output-empty-icon">📸</div><div>Your social media content will appear here.</div></div></div>
+    </div>
+  </div>
+
+  <!-- WHATSAPP -->
+  <div class="panel" id="panel-whatsapp">
+    <div class="form-card">
+      <h3>Your details</h3>
+      <div class="field"><label>Restaurant name</label><input id="w-name" value="Spice Garden" /></div>
+      <div class="field"><label>Message type</label>
+        <select id="w-type">
+          <option value="confirm">Reservation confirmation</option>
+          <option value="followup">Post-visit review request</option>
+          <option value="promo">Promotional offer</option>
+        </select>
+      </div>
+      <div class="field"><label>Details</label>
+        <textarea id="w-detail">Customer: Priya Sharma. Date: Saturday 21st June. Time: 7:30pm. Party of 4.</textarea>
+      </div>
+      <button class="gen-btn" id="btn-whatsapp" onclick="generate('whatsapp')">✦ Generate message</button>
+      <div class="error-msg" id="err-whatsapp"></div>
+    </div>
+    <div class="output-card">
+      <div class="output-header"><h3>AI-generated WhatsApp message</h3><button class="copy-btn" id="copy-whatsapp" onclick="copyOut('whatsapp')">⎘ Copy</button></div>
+      <div class="output-body" id="out-whatsapp"><div class="output-empty"><div class="output-empty-icon">💬</div><div>Your WhatsApp message will appear here.</div></div></div>
+    </div>
+  </div>
+
+  <!-- MENU -->
+  <div class="panel" id="panel-menu">
+    <div class="form-card">
+      <h3>Your details</h3>
+      <div class="field"><label>Restaurant name</label><input id="m-name" value="Spice Garden" /></div>
+      <div class="field"><label>Task</label>
+        <select id="m-type">
+          <option value="rewrite">Rewrite existing description</option>
+          <option value="new">Write from scratch</option>
+          <option value="seasonal">Write 3 seasonal specials</option>
+        </select>
+      </div>
+      <div class="field"><label>Dish + details / current description</label>
+        <textarea id="m-detail">Paneer Tikka Masala. Current: "Paneer in tomato gravy with spices." Ingredients: tandoor-grilled paneer, slow-cooked tomato-cashew gravy, fenugreek, cream.</textarea>
+      </div>
+      <button class="gen-btn" id="btn-menu" onclick="generate('menu')">✦ Generate menu copy</button>
+      <div class="error-msg" id="err-menu"></div>
+    </div>
+    <div class="output-card">
+      <div class="output-header"><h3>AI-generated menu copy</h3><button class="copy-btn" id="copy-menu" onclick="copyOut('menu')">⎘ Copy</button></div>
+      <div class="output-body" id="out-menu"><div class="output-empty"><div class="output-empty-icon">🍽️</div><div>Your menu description will appear here.</div></div></div>
+    </div>
+  </div>
+
+  <div class="use-cases">
+    <div class="uc-card"><div class="uc-icon green">⭐</div><h4>Google Review Replies</h4><p>Reply to every review in seconds. Personalised, professional, on-brand every time.</p><div class="uc-saving">Saves 3–4 hrs/week</div></div>
+    <div class="uc-card"><div class="uc-icon blue">📸</div><h4>Social Media Content</h4><p>Generate a month of Instagram and Facebook posts in one sitting.</p><div class="uc-saving">Saves 5 hrs/week</div></div>
+    <div class="uc-card"><div class="uc-icon amber">💬</div><h4>WhatsApp Automation</h4><p>Confirmations, follow-ups, and promos sent automatically.</p><div class="uc-saving">3× more reviews</div></div>
+    <div class="uc-card"><div class="uc-icon purple">🍽️</div><h4>Menu Descriptions</h4><p>Turn basic dish names into mouth-watering copy that drives orders.</p><div class="uc-saving">Higher avg order value</div></div>
+  </div>
+</section>
+
+<section class="how">
+  <div class="section-label">Process</div>
+  <div class="section-title">How we work together</div>
+  <div class="steps-grid">
+    <div class="step"><div class="step-num">1</div><h4>Free AI Audit</h4><p>We review your restaurant and identify exactly where AI saves time and makes money.</p></div>
+    <div class="step"><div class="step-num">2</div><h4>Live Demo</h4><p>We show AI working with your real name, reviews, and content in 15 minutes.</p></div>
+    <div class="step"><div class="step-num">3</div><h4>Setup & Train</h4><p>We set everything up for you and train your team in under 2 hours.</p></div>
+    <div class="step"><div class="step-num">4</div><h4>Ongoing Support</h4><p>Monthly check-ins and new automations as your business grows.</p></div>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-box">
+    <h2>Ready to save 5+ hours a week?</h2>
+    <p>Book a free 15-minute AI audit. No tech knowledge needed. No commitment.</p>
+    <div class="cta-actions">
+      <a class="btn-primary" href="YOUR_CALENDLY_LINK" target="_blank">Book free audit →</a>
+      <a class="btn-secondary" href="https://wa.me/YOUR_PHONE_NUMBER" target="_blank">Message on WhatsApp</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  Built by <span>YOUR NAME</span> — AI Consultant for Restaurants &amp; Cafes &nbsp;·&nbsp; <span>YOUR@EMAIL.COM</span>
+</footer>
+
+<div class="toast" id="toast">Copied!</div>
+
+<script>
+function switchTab(id, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function getPrompt(type) {
+  const p = {
+    reviews: () => {
+      const name = document.getElementById('r-name').value || 'the restaurant';
+      const rt = document.getElementById('r-type').value;
+      const rv = document.getElementById('r-review').value;
+      return {
+        '5star': `Write a warm, genuine reply to this 5-star Google review for ${name}. Under 60 words. Mention reviewer's name if given. End with invitation to return. Sound human, not corporate. Review: "${rv}"`,
+        '1star': `Write a professional, empathetic reply to this negative Google review for ${name}. Acknowledge the issue, apologise sincerely, offer to resolve offline. No discounts in reply. Under 80 words. Review: "${rv}"`,
+        '4star': `Write a warm reply to this 4-star Google review for ${name}. Thank them for positives, gently acknowledge the concern, invite them back. Under 60 words. Review: "${rv}"`,
+        'notext': `Write a short friendly reply to a 4-star Google review with no text, for ${name}. Under 40 words. Warm and human.`
+      }[rt];
+    },
+    social: () => {
+      const name = document.getElementById('s-name').value || 'the restaurant';
+      const st = document.getElementById('s-type').value;
+      const d = document.getElementById('s-detail').value;
+      return {
+        'dish': `Write an Instagram caption for ${name} featuring: ${d}. Sensory and mouth-watering — taste, texture, aroma. Soft CTA at end. Under 100 words. Include 8 relevant hashtags.`,
+        'calendar': `Give 7 creative social media post ideas for ${name} around: ${d}. For each: post type, one-line caption idea, best platform. Practical and punchy.`,
+        'festival': `Write an Instagram post for ${name} for: ${d}. Warm, festive tone. Under 80 words. 6 hashtags.`,
+        'reel': `Write a 30-second Instagram Reel script for ${name} about: ${d}. Sections: hook (3 sec), main content, CTA. Label each section.`
+      }[st];
+    },
+    whatsapp: () => {
+      const name = document.getElementById('w-name').value || 'the restaurant';
+      const wt = document.getElementById('w-type').value;
+      const d = document.getElementById('w-detail').value;
+      return {
+        'confirm': `Write a friendly WhatsApp reservation confirmation for ${name}. Details: ${d}. Warm greeting, confirm booking details, mention they can contact us if plans change. Under 60 words. Use line breaks for mobile.`,
+        'followup': `Write a WhatsApp follow-up from ${name} sent 24 hrs after a customer visit. Details: ${d}. Thank them, ask for Google review (use [REVIEW LINK]). Under 50 words. Warm and genuine.`,
+        'promo': `Write a WhatsApp broadcast from ${name} for: ${d}. Create urgency without being pushy. Clear CTA. Under 60 words. Mobile-friendly with line breaks.`
+      }[wt];
+    },
+    menu: () => {
+      const name = document.getElementById('m-name').value || 'the restaurant';
+      const mt = document.getElementById('m-type').value;
+      const d = document.getElementById('m-detail').value;
+      return {
+        'rewrite': `Rewrite this menu description for ${name} to be irresistible and sensory. Under 30 words. Highlight key ingredients and cooking method. No "delicious" or "tasty". Current: ${d}`,
+        'new': `Write a compelling menu description for ${name}: ${d}. Under 30 words. Sensory, specific, mouth-watering.`,
+        'seasonal': `Write 3 menu descriptions for seasonal specials at ${name} inspired by: ${d}. Each under 30 words. Numbered list. Evocative and seasonal.`
+      }[mt];
+    }
+  };
+  return p[type]();
+}
+
+async function generate(type) {
+  const btn = document.getElementById('btn-' + type);
+  const out = document.getElementById('out-' + type);
+  const copyBtn = document.getElementById('copy-' + type);
+  const errEl = document.getElementById('err-' + type);
+
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Generating...';
+  out.innerHTML = '';
+  copyBtn.classList.remove('show');
+  errEl.classList.remove('show');
+
+  try {
+    const res = await fetch('/api/generate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ prompt: getPrompt(type) })
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || 'Server error');
+    }
+
+    const reader = res.body.getReader();
+    const dec = new TextDecoder();
+    let buf = '', text = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+      if (done) break;
+      buf += dec.decode(value, { stream: true });
+      const lines = buf.split('\n');
+      buf = lines.pop();
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          const d = line.slice(6).trim();
+          if (d === '[DONE]') continue;
+          try {
+            const j = JSON.parse(d);
+            if (j.type === 'content_block_delta' && j.delta?.text) {
+              text += j.delta.text;
+              out.textContent = text;
+            }
+          } catch(e) {}
+        }
+      }
+    }
+    if (text) copyBtn.classList.add('show');
+  } catch (e) {
+    errEl.textContent = '⚠ ' + e.message;
+    errEl.classList.add('show');
+    out.innerHTML = '';
+  }
+
+  btn.disabled = false;
+  const labels = { reviews: 'Generate AI reply', social: 'Generate post', whatsapp: 'Generate message', menu: 'Generate menu copy' };
+  btn.innerHTML = `✦ ${labels[type]}`;
+}
+
+function copyOut(type) {
+  const text = document.getElementById('out-' + type).textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    const t = document.getElementById('toast');
+    t.classList.add('show');
+    setTimeout(() => t.classList.remove('show'), 2000);
+  });
+}
+</script>
+</body>
+</html>
